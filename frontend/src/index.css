@@ -1,1 +1,40 @@
+/* src/index.css */
 @import "tailwindcss";
+@import "./fonts.css";
+
+:root {
+  --bg-primary: #f7f7f8;
+  --bg-secondary: #e5e5e5;
+  --text-main: #111111;
+  --text-muted: #6b7280;
+  --input-bg: #ffffff;
+  --input-border: #e5e7eb;
+  --btn-primary-bg: #000000;
+  --btn-primary-text: #ffffff;
+}
+
+/* Future dark mode setup */
+.dark {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --text-main: #f9f9f9;
+  --text-muted: #a1a1aa;
+  --input-bg: #1e1e1e;
+  --input-border: #333333;
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #000000;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: 'Figtree', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.heading-font {
+  font-family: 'PP Neue Montreal', sans-serif;
+}

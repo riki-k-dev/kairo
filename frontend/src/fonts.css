@@ -1,0 +1,13 @@
+/* src/fonts.css */
+
+/* Primary heading font */
+@font-face {
+    font-family: 'Figtree';
+    src: url('./fonts/figtree-light.ttf') format('opentype');
+}
+
+/* Secondary body font */
+@font-face {
+    font-family: 'PP Neue Montreal';
+    src: url('./fonts/PPNeueMontreal-book.ttf') format('opentype');
+}
