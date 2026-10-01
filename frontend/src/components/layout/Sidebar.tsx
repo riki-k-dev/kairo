@@ -8,7 +8,6 @@ import logoImg from "../../assets/l2.png";
 
 export default function Sidebar() {
   const loc = useLocation();
-
   const [listOpen, setListOpen] = useState(true);
 
   const subTasksList = [
@@ -18,9 +17,7 @@ export default function Sidebar() {
     "Create a planer",
   ];
 
-  // logout action mock
   const handleLogOut = () => {
-    // console.log("User logged out");
     window.location.href = "/signin";
   };
 
@@ -42,15 +39,14 @@ export default function Sidebar() {
   };
 
   const listItemVars = {
-    hidden: { opacity: 0, x: -10 }, // Thoda left se slide in effect
+    hidden: { opacity: 0, x: -10 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.2 } },
   };
 
   return (
-    <aside className="w-64 h-screen bg-[var(--bg-primary)] border-r border-[var(--input-border)] flex flex-col justify-between py-13 px-4 hidden md:flex">
+    <aside className="w-64 h-screen bg-[var(--bg-primary)] border-r border-[var(--input-border)] flex flex-col justify-between py-10 px-4 hidden md:flex">
       {/* Top Section */}
       <div>
-        {/* Brand Header */}
         <div className="flex items-center -mx-2 -mt-4 -mb-2">
           <img src={logoImg} alt="Kairo" className="w-17 h-17 object-contain" />
           <span className="heading-font text-3xl font-medium tracking-tight text-[var(--text-main)] -ml-2">
@@ -58,14 +54,11 @@ export default function Sidebar() {
           </span>
         </div>
 
-        {/* Brand Tagline */}
         <p className="text-xs text-[var(--text-muted)] mb-8 px-2 leading-relaxed">
           A simple, joyful way to take control of your time and routines
         </p>
 
-        {/* Nav Links */}
         <nav className="space-y-1">
-          {/* Main List Toggle Button */}
           <div
             onClick={() => setListOpen(!listOpen)}
             className={`flex items-center justify-between px-3 py-2 rounded-md transition-colors cursor-pointer select-none ${
@@ -81,7 +74,6 @@ export default function Sidebar() {
             {listOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </div>
 
-          {/* Nested Sub-tasks Tree List */}
           <AnimatePresence initial={false}>
             {listOpen && (
               <motion.ul
@@ -107,10 +99,10 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Bottom Section - User Profile */}
+      {/* Bottom Section */}
       <div className="flex items-center justify-between p-3 border border-[var(--input-border)] rounded-md bg-[var(--input-bg)] shadow-sm">
         <div className="flex items-center">
-          <div className="w-8 h-8 bg-[var(--bg-secondary)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3">
+          <div className="w-8 h-8 bg-[var(--input-border)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3">
             R
           </div>
           <div className="flex flex-col">

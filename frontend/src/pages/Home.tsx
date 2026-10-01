@@ -60,6 +60,7 @@ export default function Home() {
     year: "numeric",
   });
 
+  // handles both create and edit saves
   const handleSaveTask = (taskData: Partial<Task>) => {
     if (taskData.id) {
       setTasksList((prev) =>
@@ -124,10 +125,10 @@ export default function Home() {
   return (
     <MainLayout>
       {/* Header & Toggle */}
-      <div className="flex justify-between items-start w-full mb-10">
+      <div className="flex justify-between items-start w-full mb-13 -mt-3">
         <div>
           <h1 className="text-3xl mb-1 heading-font text-[var(--text-main)]">
-            Hey, Riki 👋
+            Hey, Riki 👋🏻
           </h1>
           <p className="text-[var(--text-muted)] italic font-serif">
             Let's make progress today!
@@ -139,8 +140,8 @@ export default function Home() {
       </div>
 
       {/* Calendar & Searchbar */}
-      <div className="flex justify-between items-center w-full pb-5 mb-8 border-b border-[var(--input-border)]">
-        <div className="relative">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 sm:gap-0 pb-5 mb-8 border-b border-[var(--input-border)]">
+        <div className="relative w-full sm:w-auto">
           <div
             className="text-sm font-medium inline-flex items-center cursor-pointer text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors select-none"
             onClick={() => setShowCal(!showCal)}
@@ -166,20 +167,21 @@ export default function Home() {
         </div>
 
         {/* Search Bar */}
-        <SearchBar value={searchQ} onChange={setSearchQ} />
+        <div className="w-full sm:w-auto">
+          <SearchBar value={searchQ} onChange={setSearchQ} />
+        </div>
       </div>
 
       {/* Main body */}
       <div className="w-full flex-1">
-        {/* Animated Filter Tabs */}
-        <div className="flex bg-[var(--input-bg)] rounded-lg shadow-sm border border-[var(--input-border)] w-max mb-8 p-1">
+        <div className="flex w-full sm:w-max bg-[var(--input-bg)] rounded-lg shadow-sm border border-[var(--input-border)] mb-8 p-1 mx-auto sm:mx-0 overflow-x-auto">
           {(["To Do", "Completed", "Pending"] as FilterType[]).map((tab) => {
             const isActive = filterStr === tab;
             return (
               <button
                 key={tab}
                 onClick={() => setFilterStr(tab)}
-                className={`relative flex items-center px-5 py-2 rounded-md text-sm transition-colors cursor-pointer ${
+                className={`relative flex flex-1 sm:flex-none justify-center items-center px-3 sm:px-5 py-2 rounded-md text-sm whitespace-nowrap transition-colors cursor-pointer ${
                   isActive
                     ? "text-[var(--btn-primary-text)] font-medium"
                     : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
@@ -230,7 +232,7 @@ export default function Home() {
 
       <button
         onClick={openCreate}
-        className="fixed bottom-8 right-8 md:right-12 lg:right-16 w-14 h-14 bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-full shadow-xl flex items-center justify-center hover:scale-105 hover:opacity-90 transition-all z-20 cursor-pointer"
+        className="fixed bottom-9 right-8 md:right-12 lg:right-16 w-14 h-14 bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-full shadow-xl flex items-center justify-center hover:scale-105 hover:opacity-90 transition-all z-20 cursor-pointer"
       >
         <Plus size={24} />
       </button>
