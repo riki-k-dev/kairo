@@ -26,7 +26,7 @@ export default function SignIn() {
           <br />
           workspace
         </h1>
-        ={" "}
+        {" "}
         <p className="text-[var(--text-muted)] text-sm leading-relaxed transition-colors">
           Welcome back! Sign in to manage your tasks, track your
           <br />

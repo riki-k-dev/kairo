@@ -12,7 +12,6 @@ interface AuthLayoutProps {
 
 // split-screen layout for Signup & Signin pages
 export default function AuthLayout({ children }: AuthLayoutProps) {
-  // pulling global theme state and toggle function
   const { themeMode, toggTheme } = useTheme();
 
   return (
@@ -37,10 +36,10 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
               <img
                 src={logoImg}
                 alt="Kairo Logo"
-                className="w-15 h-15 object-contain"
+                className="w-17 h-17 object-contain"
               />
             </div>
-            <span className="heading-font text-2xl font-medium tracking-tight text-(--text-main) -ml-2">
+            <span className="heading-font text-3xl font-medium tracking-tight text-(--text-main) -ml-2">
               Kairo
             </span>
           </div>
@@ -59,7 +58,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </div>
 
         {/* Dynamic Form Wrapper */}
-        <div className="flex-1 flex flex-col justify-center max-w-md mx-auto py-20 w-full">
+        <div className="flex-1 flex flex-col justify-center max-w-md mx-auto py-15 w-full">
           {children}
         </div>
       </div>

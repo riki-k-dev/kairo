@@ -38,3 +38,8 @@ h3,
 .heading-font {
   font-family: 'PP Neue Montreal', sans-serif;
 }
+
+::selection {
+  background-color: #000;
+  color: #fff;
+}
