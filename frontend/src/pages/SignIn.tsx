@@ -4,29 +4,25 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLayout from "../components/auth/AuthLayout";
+import Button1 from "../components/ui/Button1";
 
 export default function SignIn() {
-  // form states
   const [emailVal, setEmailVal] = useState("");
   const [passVal, setPassVal] = useState("");
   const [showPass, setShowPass] = useState(false);
 
-  // handle login form submission
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // console.log("login attempt:", emailVal);
   };
 
   return (
     <AuthLayout>
-      {/* Page Titles */}
       <div className="mb-8">
         <h1 className="text-4xl mb-3 heading-font text-[var(--text-main)] leading-tight transition-colors">
           Sign in to your
           <br />
           workspace
         </h1>
-        {" "}
         <p className="text-[var(--text-muted)] text-sm leading-relaxed transition-colors">
           Welcome back! Sign in to manage your tasks, track your
           <br />
@@ -34,7 +30,6 @@ export default function SignIn() {
         </p>
       </div>
 
-      {/* Signin Form */}
       <form onSubmit={handleLogin} className="space-y-5">
         <div className="space-y-1.5">
           <label className="text-sm text-[var(--text-main)] block transition-colors">
@@ -73,15 +68,10 @@ export default function SignIn() {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded py-3 mt-2 hover:opacity-90 transition-colors cursor-pointer"
-        >
-          Sign in
-        </button>
+        {/* button */}
+        <Button1 type="submit">Sign in</Button1>
       </form>
 
-      {/* Footer Link */}
       <div className="mt-6 text-center text-sm text-[var(--text-muted)] transition-colors">
         Don't have an account?{" "}
         <Link

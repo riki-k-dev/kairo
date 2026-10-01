@@ -42,7 +42,7 @@ export default function TaskCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
       style={{ backgroundColor: getBgColor(task.color) }}
-      className="p-5 rounded-lg shadow-sm relative group"
+      className="p-5 rounded-lg shadow-sm relative group flex flex-col h-full min-h-[160px]"
     >
       {/* Card Header */}
       <div className="flex justify-between items-start mb-3">
@@ -107,13 +107,13 @@ export default function TaskCard({
 
       {/* Description */}
       <p
-        className={`text-sm mb-6 line-clamp-4 ${task.completed ? "text-gray-500" : "text-gray-700"}`}
+        className={`text-sm mb-6 line-clamp-4 flex-grow ${task.completed ? "text-gray-500" : "text-gray-700"}`}
       >
         {task.description}
       </p>
 
       {/* Footer / Timing */}
-      <div className="flex items-center text-xs text-gray-700 font-medium">
+      <div className="flex items-center text-xs text-gray-700 font-medium mt-auto">
         <Clock size={14} className="mr-1.5" />
         {task.startTime} - {task.endTime}
       </div>

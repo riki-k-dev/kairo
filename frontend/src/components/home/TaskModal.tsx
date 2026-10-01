@@ -28,7 +28,6 @@ export default function TaskModal({
   const [eTime, setETime] = useState("");
   const [selColor, setSelColor] = useState("yellow");
 
-  // populate if editing
   useEffect(() => {
     if (taskToEdit) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -62,10 +61,13 @@ export default function TaskModal({
     onClose();
   };
 
+  // let fabAnimReady = true;
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Background Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -74,11 +76,13 @@ export default function TaskModal({
             className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm"
           />
 
+          {/* Modal Content */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-[var(--bg-primary)] rounded-xl shadow-2xl z-50 overflow-hidden border border-[var(--input-border)]"
+            initial={{ opacity: 0, scale: 0.1, x: "40vw", y: "40vh" }}
+            animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+            exit={{ opacity: 0, scale: 0.1, x: "40vw", y: "40vh" }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="fixed left-1/2 top-1/2 w-full max-w-md bg-[var(--bg-primary)] rounded-xl shadow-2xl z-50 overflow-hidden border border-[var(--input-border)]"
           >
             <div className="flex justify-between items-center p-5 border-b border-[var(--input-border)]">
               <h2 className="heading-font text-xl font-medium text-[var(--text-main)]">

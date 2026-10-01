@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ListTodo, LogOut, ChevronRight, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "../../assets/l2.png";
 
 export default function Sidebar() {
@@ -17,14 +18,36 @@ export default function Sidebar() {
     "Create a planer",
   ];
 
-  // handle user logout mock
+  // logout action mock
   const handleLogOut = () => {
-    // console.log("triggering logout action");
+    // console.log("User logged out");
     window.location.href = "/signin";
   };
 
+  const listContainerVars = {
+    hidden: {
+      opacity: 0,
+      height: 0,
+      transition: { duration: 0.2 },
+    },
+    visible: {
+      opacity: 1,
+      height: "auto",
+      transition: {
+        duration: 0.3,
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const listItemVars = {
+    hidden: { opacity: 0, x: -10 }, // Thoda left se slide in effect
+    visible: { opacity: 1, x: 0, transition: { duration: 0.2 } },
+  };
+
   return (
-    <aside className="w-64 h-screen bg-[var(--bg-primary)] border-r border-[var(--input-border)] flex flex-col justify-between py-10 px-4 hidden md:flex">
+    <aside className="w-64 h-screen bg-[var(--bg-primary)] border-r border-[var(--input-border)] flex flex-col justify-between py-13 px-4 hidden md:flex">
       {/* Top Section */}
       <div>
         {/* Brand Header */}
@@ -42,12 +65,13 @@ export default function Sidebar() {
 
         {/* Nav Links */}
         <nav className="space-y-1">
+          {/* Main List Toggle Button */}
           <div
             onClick={() => setListOpen(!listOpen)}
             className={`flex items-center justify-between px-3 py-2 rounded-md transition-colors cursor-pointer select-none ${
               loc.pathname === "/"
-                ? "text-(--text-main)"
-                : "text-(--text-muted) hover:text-(--text-main)"
+                ? "text-[var(--text-main)]"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
             }`}
           >
             <div className="flex items-center text-sm font-medium">
@@ -58,23 +82,32 @@ export default function Sidebar() {
           </div>
 
           {/* Nested Sub-tasks Tree List */}
-          {listOpen && (
-            <ul className="ml-6 border-l-2 border-[var(--input-border)] mt-1 mb-4 space-y-1">
-              {subTasksList.map((st, idx) => (
-                <li
-                  key={idx}
-                  className="relative pl-4 py-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer transition-colors"
-                >
-                  <span className="absolute left-0 w-3 border-t-2 border-[var(--input-border)] top-1/2 -translate-y-1/2"></span>
-                  <span className="truncate block pr-2">{st}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <AnimatePresence initial={false}>
+            {listOpen && (
+              <motion.ul
+                variants={listContainerVars}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="ml-6 border-l-2 border-[var(--input-border)] mt-1 mb-4 space-y-1 overflow-hidden"
+              >
+                {subTasksList.map((st, idx) => (
+                  <motion.li
+                    key={idx}
+                    variants={listItemVars}
+                    className="relative pl-4 py-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer transition-colors"
+                  >
+                    <span className="absolute left-0 w-3 border-t-2 border-[var(--input-border)] top-1/2 -translate-y-1/2"></span>
+                    <span className="truncate block pr-2">{st}</span>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </nav>
       </div>
 
-      {/* Bottom Section */}
+      {/* Bottom Section - User Profile */}
       <div className="flex items-center justify-between p-3 border border-[var(--input-border)] rounded-md bg-[var(--input-bg)] shadow-sm">
         <div className="flex items-center">
           <div className="w-8 h-8 bg-[var(--bg-secondary)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3">

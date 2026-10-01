@@ -4,24 +4,21 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLayout from "../components/auth/AuthLayout";
+import Button1 from "../components/ui/Button1";
 
 export default function SignUp() {
-  // form states
   const [uName, setUname] = useState("");
   const [emailStr, setEmailStr] = useState("");
   const [pass, setPass] = useState("");
 
   const [showPass, setShowPass] = useState(false);
 
-  // handle form submission
   const handleSub = (e: React.FormEvent) => {
     e.preventDefault();
-    // console.log("form trigger:", uName, emailStr);
   };
 
   return (
     <AuthLayout>
-      {/* Page Titles */}
       <div className="mb-8">
         <h1 className="text-4xl mb-3 heading-font text-[var(--text-main)] leading-tight transition-colors">
           Sign up to your
@@ -35,7 +32,6 @@ export default function SignUp() {
         </p>
       </div>
 
-      {/* Signup Form */}
       <form onSubmit={handleSub} className="space-y-5">
         <div className="space-y-1.5">
           <label className="text-sm text-[var(--text-main)] block transition-colors">
@@ -88,15 +84,10 @@ export default function SignUp() {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded py-3 mt-2 hover:opacity-90 transition-colors cursor-pointer"
-        >
-          Sign up
-        </button>
+        {/* button */}
+        <Button1 type="submit">Sign up</Button1>
       </form>
 
-      {/* Footer Link */}
       <div className="mt-6 text-center text-sm text-[var(--text-muted)] transition-colors">
         Already have an account?{" "}
         <Link

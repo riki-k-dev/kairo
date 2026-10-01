@@ -1,19 +1,15 @@
 // src/components/auth/AuthLayout.tsx
 
 import type { ReactNode } from "react";
-import { Sun, Moon } from "lucide-react";
 import leftBannerImg from "../../assets/leftBannerImg.jpg";
 import logoImg from "../../assets/l2.png";
-import { useTheme } from "../ThemeProvider";
+import ThemeToggle from "../ui/ThemeToggle";
 
 interface AuthLayoutProps {
   children: ReactNode;
 }
 
-// split-screen layout for Signup & Signin pages
 export default function AuthLayout({ children }: AuthLayoutProps) {
-  const { themeMode, toggTheme } = useTheme();
-
   return (
     <div className="flex h-screen w-full bg-[var(--bg-primary)] overflow-hidden transition-colors duration-300">
       {/* Left side */}
@@ -44,17 +40,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             </span>
           </div>
 
-          <button
-            type="button"
-            className="p-2 bg-[var(--input-bg)] rounded shadow-sm border border-[var(--input-border)] hover:opacity-80 transition-all cursor-pointer"
-            onClick={toggTheme}
-          >
-            {themeMode === "light" ? (
-              <Moon size={20} className="text-[var(--text-muted)]" />
-            ) : (
-              <Sun size={20} className="text-[var(--text-muted)]" />
-            )}
-          </button>
+          <ThemeToggle />
         </div>
 
         {/* Dynamic Form Wrapper */}
