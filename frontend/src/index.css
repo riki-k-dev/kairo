@@ -2,6 +2,7 @@
 @import "tailwindcss";
 @import "./fonts.css";
 
+
 :root {
   --bg-primary: #f7f7f8;
   --bg-secondary: #e5e5e5;
@@ -13,7 +14,7 @@
   --btn-primary-text: #ffffff;
 }
 
-/* Future dark mode setup */
+/* dark mode setup */
 .dark {
   --bg-primary: #121212;
   --bg-secondary: #1e1e1e;
@@ -39,6 +40,7 @@ h3,
   font-family: 'PP Neue Montreal', sans-serif;
 }
 
+/* scrollbar styling */
 ::-webkit-scrollbar {
   width: 1px;
 }
@@ -56,6 +58,7 @@ h3,
   background: #555;
 }
 
+/* selection styling */
 ::selection {
   background-color: #000;
   color: #fff;
