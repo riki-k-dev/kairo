@@ -17,6 +17,7 @@ export interface Task {
   startTime: string;
   endTime: string;
   createdAt: string;
+  completedAt?: string;
 }
 
 // UI specific type for our filter tabs

@@ -39,8 +39,8 @@ export default function TaskModal({
     } else {
       setTTitle("");
       setTDesc("");
-      setSTime("10:00 AM");
-      setETime("11:00 AM");
+      setSTime("");
+      setETime("");
       setSelColor("yellow");
     }
   }, [taskToEdit, isOpen]);

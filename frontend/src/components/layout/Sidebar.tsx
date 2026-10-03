@@ -1,7 +1,7 @@
 // frontend/src/components/layout/Sidebar.tsx
 
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ListTodo, LogOut, ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "../../assets/l2.png";
@@ -20,7 +20,6 @@ export default function Sidebar({ tasks = [] }: SidebarProps) {
   const { user, logoutUser } = useAuth();
 
   const handleLogOut = () => {
-    // console.log("Logging out");
     logoutUser();
     navigate("/signin", { replace: true });
   };
@@ -47,12 +46,15 @@ export default function Sidebar({ tasks = [] }: SidebarProps) {
     <aside className="w-64 h-screen bg-[var(--bg-primary)] border-r border-[var(--input-border)] flex flex-col justify-between py-10 px-4 hidden md:flex">
       {/* Top Section */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden pr-2">
-        <div className="flex items-center -mx-2 -mt-4 -mb-2">
+        <Link
+          to="/"
+          className="flex items-center -mx-2 -mt-4 -mb-2 cursor-pointer hover:opacity-80 transition-opacity"
+        >
           <img src={logoImg} alt="Kairo" className="w-17 h-17 object-contain" />
           <span className="heading-font text-3xl font-medium tracking-tight text-[var(--text-main)] -ml-2">
             Kairo
           </span>
-        </div>
+        </Link>
 
         <p className="text-xs text-[var(--text-muted)] mb-8 px-2 leading-relaxed">
           A simple, joyful way to take control of your time and routines
@@ -60,11 +62,14 @@ export default function Sidebar({ tasks = [] }: SidebarProps) {
 
         <nav className="space-y-1">
           <div
-            onClick={() => setListOpen(!listOpen)}
+            onClick={() => {
+              navigate("/");
+              setListOpen(!listOpen);
+            }}
             className={`flex items-center justify-between px-3 py-2 rounded-md transition-colors cursor-pointer select-none ${
               loc.pathname === "/"
-                ? "text-[var(--text-main)]"
-                : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                ? "text-[var(--text-main)] bg-[var(--bg-secondary)]"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-secondary)]"
             }`}
           >
             <div className="flex items-center text-sm font-medium">
@@ -111,9 +116,13 @@ export default function Sidebar({ tasks = [] }: SidebarProps) {
         </nav>
       </div>
 
-      <div className="flex items-center justify-between p-3 border border-[var(--input-border)] rounded-md bg-[var(--input-bg)] shadow-sm shrink-0 mt-4">
-        <div className="flex items-center overflow-hidden">
-          <div className="w-8 h-8 shrink-0 bg-[var(--input-border)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3 uppercase">
+      {/* Bottom Section */}
+      <div className="flex items-center justify-between p-3 border border-[var(--input-border)] rounded-md bg-[var(--input-bg)] shadow-sm shrink-0 mt-4 transition-colors dark:hover:border-gray-600">
+        <div
+          onClick={() => navigate("/profile")}
+          className="flex items-center overflow-hidden cursor-pointer flex-1"
+        >
+          <div className="w-8 h-8 shrink-0 bg-[var(--input-border)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3 uppercase transition-colors)]">
             {user?.name ? user.name.charAt(0) : "U"}
           </div>
           <div className="flex flex-col truncate pr-2">
@@ -127,7 +136,8 @@ export default function Sidebar({ tasks = [] }: SidebarProps) {
         </div>
         <button
           onClick={handleLogOut}
-          className="text-[var(--text-muted)] hover:text-red-500 transition-colors cursor-pointer shrink-0"
+          title="Sign out"
+          className="text-[var(--text-muted)] hover:text-red-500 transition-colors cursor-pointer shrink-0 ml-2"
         >
           <LogOut size={16} />
         </button>
