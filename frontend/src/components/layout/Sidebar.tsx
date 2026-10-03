@@ -1,32 +1,32 @@
-// src/components/layout/Sidebar.tsx
+// frontend/src/components/layout/Sidebar.tsx
 
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ListTodo, LogOut, ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "../../assets/l2.png";
+import { useAuth } from "../../context/AuthContext";
+import type { Task } from "../../types";
 
-export default function Sidebar() {
+interface SidebarProps {
+  tasks?: Task[];
+}
+
+export default function Sidebar({ tasks = [] }: SidebarProps) {
   const loc = useLocation();
+  const navigate = useNavigate();
   const [listOpen, setListOpen] = useState(true);
 
-  const subTasksList = [
-    "Team Meeting",
-    "Work on Branding",
-    "Make a Report for client",
-    "Create a planer",
-  ];
+  const { user, logoutUser } = useAuth();
 
   const handleLogOut = () => {
-    window.location.href = "/signin";
+    // console.log("Logging out");
+    logoutUser();
+    navigate("/signin", { replace: true });
   };
 
   const listContainerVars = {
-    hidden: {
-      opacity: 0,
-      height: 0,
-      transition: { duration: 0.2 },
-    },
+    hidden: { opacity: 0, height: 0, transition: { duration: 0.2 } },
     visible: {
       opacity: 1,
       height: "auto",
@@ -46,7 +46,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 h-screen bg-[var(--bg-primary)] border-r border-[var(--input-border)] flex flex-col justify-between py-10 px-4 hidden md:flex">
       {/* Top Section */}
-      <div>
+      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-2">
         <div className="flex items-center -mx-2 -mt-4 -mb-2">
           <img src={logoImg} alt="Kairo" className="w-17 h-17 object-contain" />
           <span className="heading-font text-3xl font-medium tracking-tight text-[var(--text-main)] -ml-2">
@@ -83,40 +83,51 @@ export default function Sidebar() {
                 exit="hidden"
                 className="ml-6 border-l-2 border-[var(--input-border)] mt-1 mb-4 space-y-1 overflow-hidden"
               >
-                {subTasksList.map((st, idx) => (
+                {tasks.length > 0 ? (
+                  tasks.map((t) => (
+                    <motion.li
+                      key={t.id}
+                      variants={listItemVars}
+                      className="relative pl-4 py-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer transition-colors"
+                    >
+                      <span className="absolute left-0 w-3 border-t-2 border-[var(--input-border)] top-1/2 -translate-y-1/2"></span>
+                      <span className="truncate block pr-2" title={t.title}>
+                        {t.title}
+                      </span>
+                    </motion.li>
+                  ))
+                ) : (
                   <motion.li
-                    key={idx}
                     variants={listItemVars}
-                    className="relative pl-4 py-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer transition-colors"
+                    className="relative pl-4 py-1.5 text-xs text-[var(--text-muted)] italic"
                   >
                     <span className="absolute left-0 w-3 border-t-2 border-[var(--input-border)] top-1/2 -translate-y-1/2"></span>
-                    <span className="truncate block pr-2">{st}</span>
+                    No tasks yet
                   </motion.li>
-                ))}
+                )}
               </motion.ul>
             )}
           </AnimatePresence>
         </nav>
       </div>
 
-      {/* Bottom Section */}
-      <div className="flex items-center justify-between p-3 border border-[var(--input-border)] rounded-md bg-[var(--input-bg)] shadow-sm">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-[var(--input-border)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3">
-            R
+      <div className="flex items-center justify-between p-3 border border-[var(--input-border)] rounded-md bg-[var(--input-bg)] shadow-sm shrink-0 mt-4">
+        <div className="flex items-center overflow-hidden">
+          <div className="w-8 h-8 shrink-0 bg-[var(--input-border)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3 uppercase">
+            {user?.name ? user.name.charAt(0) : "U"}
           </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-[var(--text-main)] leading-none mb-1">
-              Riki Kashyap
+          <div className="flex flex-col truncate pr-2">
+            <span className="text-sm font-medium text-[var(--text-main)] leading-none mb-1 truncate">
+              {user?.name || "User"}
             </span>
-            <span className="text-[10px] text-[var(--text-muted)]">
-              my@example.com
+            <span className="text-[10px] text-[var(--text-muted)] truncate">
+              {user?.email || "loading..."}
             </span>
           </div>
         </div>
         <button
           onClick={handleLogOut}
-          className="text-[var(--text-muted)] hover:text-red-500 transition-colors cursor-pointer"
+          className="text-[var(--text-muted)] hover:text-red-500 transition-colors cursor-pointer shrink-0"
         >
           <LogOut size={16} />
         </button>

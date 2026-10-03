@@ -1,18 +1,18 @@
-// src/components/layout/MainLayout.tsx
+// frontend/src/components/layout/MainLayout.tsx
 
 import { type ReactNode } from "react";
 import Sidebar from "./Sidebar";
+import type { Task } from "../../types";
 
 interface LayoutProps {
   children: ReactNode;
+  tasks?: Task[];
 }
 
-export default function MainLayout({ children }: LayoutProps) {
-  // let paddingVal = "px-12";
-
+export default function MainLayout({ children, tasks = [] }: LayoutProps) {
   return (
     <div className="flex h-screen w-full bg-[var(--bg-primary)] overflow-hidden transition-colors duration-300">
-      <Sidebar />
+      <Sidebar tasks={tasks} />
 
       {/* Main Content */}
       <main className="flex-1 h-full overflow-y-auto">

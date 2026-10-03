@@ -62,7 +62,6 @@ export default function SignIn() {
       </div>
 
       <form onSubmit={handleLogin} className="space-y-5">
-        {/* Simple error banner if auth fails */}
         {errorMsg && (
           <div className="p-3 bg-red-50 text-red-500 text-sm rounded border border-red-100">
             {errorMsg}

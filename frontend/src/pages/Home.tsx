@@ -1,6 +1,6 @@
-// src/pages/Home.tsx
+// frontend/src/pages/Home.tsx
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   ChevronDown,
@@ -16,35 +16,13 @@ import TaskModal from "../components/home/TaskModal";
 import ThemeToggle from "../components/ui/ThemeToggle";
 import SearchBar from "../components/ui/SearchBar";
 import Calendar from "../components/ui/Calendar";
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import type { Task, FilterType } from "../types";
 
-const MOCK_TASKS: Task[] = [
-  {
-    id: "t1",
-    title: "Create a Planer",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae.",
-    completed: false,
-    color: "yellow",
-    startTime: "12:30 PM",
-    endTime: "1:00 PM",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "t2",
-    title: "Team Meeting",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
-    completed: false,
-    color: "purple",
-    startTime: "2:30 PM",
-    endTime: "3:00 PM",
-    createdAt: new Date().toISOString(),
-  },
-];
-
 export default function Home() {
-  const [tasksList, setTasksList] = useState<Task[]>(MOCK_TASKS);
+  const { user } = useAuth();
+  const [tasksList, setTasksList] = useState<Task[]>([]);
   const [filterStr, setFilterStr] = useState<FilterType>("To Do");
   const [searchQ, setSearchQ] = useState("");
 
@@ -53,6 +31,7 @@ export default function Home() {
 
   const [selDate, setSelDate] = useState<Date>(new Date());
   const [showCal, setShowCal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const displayDateStr = selDate.toLocaleDateString("en-GB", {
     day: "numeric",
@@ -60,37 +39,72 @@ export default function Home() {
     year: "numeric",
   });
 
-  // handles both create and edit saves
-  const handleSaveTask = (taskData: Partial<Task>) => {
-    if (taskData.id) {
-      setTasksList((prev) =>
-        prev.map((t) =>
-          t.id === taskData.id ? ({ ...t, ...taskData } as Task) : t,
-        ),
-      );
-    } else {
-      const newTask: Task = {
-        ...(taskData as Task),
-        id: Math.random().toString(36).substring(2, 9),
-        createdAt: new Date().toISOString(),
-      };
-      setTasksList((prev) => [newTask, ...prev]);
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await api.get("/tasks");
+        if (res.data.success) {
+          setTasksList(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch tasks", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTasks();
+  }, []);
+
+  const handleSaveTask = async (taskData: Partial<Task>) => {
+    try {
+      if (taskData.id) {
+        const res = await api.patch(`/tasks/${taskData.id}`, taskData);
+        if (res.data.success) {
+          setTasksList((prev) =>
+            prev.map((t) =>
+              t.id === taskData.id ? ({ ...t, ...res.data.data } as Task) : t,
+            ),
+          );
+        }
+      } else {
+        const res = await api.post("/tasks", taskData);
+        if (res.data.success) {
+          setTasksList((prev) => [res.data.data, ...prev]);
+        }
+      }
+    } catch (err) {
+      console.error("Error saving task:", err);
+      alert("Failed to save task. Please try again.");
     }
   };
 
-  const handleDelete = (id: string) => {
-    setTasksList((prev) => prev.filter((t) => t.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await api.delete(`/tasks/${id}`);
+      setTasksList((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error("Could not delete task", err);
+    }
   };
 
-  const handleToggleState = (id: string) => {
+  const handleToggleState = async (id: string) => {
+    const taskToToggle = tasksList.find((t) => t.id === id);
+    if (!taskToToggle) return;
+
+    const newStatus = !taskToToggle.completed;
+
     setTasksList((prev) =>
-      prev.map((t) => {
-        if (t.id === id) {
-          return { ...t, completed: !t.completed };
-        }
-        return t;
-      }),
+      prev.map((t) => (t.id === id ? { ...t, completed: newStatus } : t)),
     );
+
+    try {
+      await api.patch(`/tasks/${id}`, { completed: newStatus });
+    } catch (err) {
+      setTasksList((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, completed: !newStatus } : t)),
+      );
+      console.error("Failed to toggle task state", err);
+    }
   };
 
   const openCreate = () => {
@@ -108,38 +122,37 @@ export default function Home() {
     setShowCal(false);
   };
 
+  // search and filter logic
   const filteredTasks = tasksList.filter((t) => {
     const matchesSearch =
       t.title.toLowerCase().includes(searchQ.toLowerCase()) ||
-      t.description.toLowerCase().includes(searchQ.toLowerCase());
+      (t.description &&
+        t.description.toLowerCase().includes(searchQ.toLowerCase()));
 
     if (!matchesSearch) return false;
 
     if (filterStr === "Completed") return t.completed;
-    if (filterStr === "Pending") return !t.completed;
-    if (filterStr === "To Do") return !t.completed;
+    if (filterStr === "Pending" || filterStr === "To Do") return !t.completed;
 
     return true;
   });
 
   return (
-    <MainLayout>
-      {/* Header & Toggle */}
+    <MainLayout tasks={tasksList}>
       <div className="flex justify-between items-start w-full mb-13 -mt-3">
         <div>
           <h1 className="text-3xl mb-1 heading-font text-[var(--text-main)]">
-            Hey, Riki 👋🏻
+            Hey, {user?.name ? user?.name?.split(" ")[0] : "there"} 👋🏻
           </h1>
           <p className="text-[var(--text-muted)] italic font-serif">
             Let's make progress today!
           </p>
         </div>
-
-        {/* ThemeToggle */}
+        {/* theme toggle */}
         <ThemeToggle className="mt-1" />
       </div>
 
-      {/* Calendar & Searchbar */}
+      {/* date and search bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 sm:gap-0 pb-5 mb-8 border-b border-[var(--input-border)]">
         <div className="relative w-full sm:w-auto">
           <div
@@ -159,20 +172,18 @@ export default function Home() {
               />
             )}
           </div>
-
-          {/* Calendar */}
+          {/* calendar */}
           {showCal && (
             <Calendar selectedDate={selDate} onSelect={handleDatePicked} />
           )}
         </div>
-
-        {/* Search Bar */}
+        {/* search bar */}
         <div className="w-full sm:w-auto">
           <SearchBar value={searchQ} onChange={setSearchQ} />
         </div>
       </div>
 
-      {/* Main body */}
+      {/* filter tabs */}
       <div className="w-full flex-1">
         <div className="flex w-full sm:w-max bg-[var(--input-bg)] rounded-lg shadow-sm border border-[var(--input-border)] mb-8 p-1 mx-auto sm:mx-0 overflow-x-auto">
           {(["To Do", "Completed", "Pending"] as FilterType[]).map((tab) => {
@@ -195,7 +206,7 @@ export default function Home() {
                     style={{ zIndex: 0 }}
                   />
                 )}
-
+                {/* icon */}
                 <span className="relative z-10 flex items-center">
                   {tab === "Completed" && <Check size={15} className="mr-2" />}
                   {tab === "Pending" && (
@@ -209,25 +220,30 @@ export default function Home() {
           })}
         </div>
 
-        {/* Task Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
-          {filteredTasks.length > 0 ? (
-            filteredTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={openEdit}
-                onDelete={handleDelete}
-                onToggleStatus={handleToggleState}
-              />
-            ))
-          ) : (
-            <div className="col-span-full py-12 text-center text-[var(--text-muted)]">
-              No tasks found for {displayDateStr}. Time to relax or create a new
-              one!
-            </div>
-          )}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center py-12 text-[var(--text-muted)]">
+            Loading tasks...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
+            {filteredTasks.length > 0 ? (
+              filteredTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onEdit={openEdit}
+                  onDelete={handleDelete}
+                  onToggleStatus={handleToggleState}
+                />
+              ))
+            ) : (
+              <div className="col-span-full py-12 text-center text-[var(--text-muted)]">
+                No tasks found for {displayDateStr}. Time to relax or create a
+                new one!
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <button
