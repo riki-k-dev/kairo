@@ -1,20 +1,59 @@
-// src/pages/SignUp.tsx
+// frontend/src/pages/SignUp.tsx
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLayout from "../components/auth/AuthLayout";
 import Button1 from "../components/ui/Button1";
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { isAxiosError } from "axios";
 
 export default function SignUp() {
   const [uName, setUname] = useState("");
   const [emailStr, setEmailStr] = useState("");
   const [pass, setPass] = useState("");
-
   const [showPass, setShowPass] = useState(false);
 
-  const handleSub = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const navigate = useNavigate();
+  const { loginUser } = useAuth();
+
+  const handleSub = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!uName || !emailStr || !pass) return;
+
+    setIsLoading(true);
+    setErrorMsg("");
+
+    try {
+      const res = await api.post("/auth/signup", {
+        name: uName,
+        email: emailStr,
+        password: pass,
+      });
+
+      if (res.data.success) {
+        loginUser(res.data.data.token, res.data.data.user);
+        navigate("/", { replace: true });
+      }
+    } catch (err: unknown) {
+      if (isAxiosError(err)) {
+        if (err.response?.data?.errors) {
+          setErrorMsg(err.response.data.errors.join(", "));
+        } else {
+          setErrorMsg(
+            err.response?.data?.message || "Signup failed. Please try again.",
+          );
+        }
+      } else {
+        setErrorMsg("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,6 +72,12 @@ export default function SignUp() {
       </div>
 
       <form onSubmit={handleSub} className="space-y-5">
+        {errorMsg && (
+          <div className="p-3 bg-red-50 text-red-500 text-sm rounded border border-red-100">
+            {errorMsg}
+          </div>
+        )}
+
         <div className="space-y-1.5">
           <label className="text-sm text-[var(--text-main)] block transition-colors">
             Name
@@ -44,6 +89,7 @@ export default function SignUp() {
             onChange={(e) => setUname(e.target.value)}
             className="w-full px-4 py-2.5 rounded border border-[var(--input-border)] bg-[var(--input-bg)] text-[var(--text-main)] focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -58,6 +104,7 @@ export default function SignUp() {
             onChange={(e) => setEmailStr(e.target.value)}
             className="w-full px-4 py-2.5 rounded border border-[var(--input-border)] bg-[var(--input-bg)] text-[var(--text-main)] focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -73,6 +120,7 @@ export default function SignUp() {
               onChange={(e) => setPass(e.target.value)}
               className="w-full px-4 py-2.5 rounded border border-[var(--input-border)] bg-[var(--input-bg)] text-[var(--text-main)] focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all"
               required
+              disabled={isLoading}
             />
             <button
               type="button"
@@ -84,8 +132,9 @@ export default function SignUp() {
           </div>
         </div>
 
-        {/* button */}
-        <Button1 type="submit">Sign up</Button1>
+        <Button1 type="submit" disabled={isLoading}>
+          {isLoading ? "Creating account..." : "Sign up"}
+        </Button1>
       </form>
 
       <div className="mt-6 text-center text-sm text-[var(--text-muted)] transition-colors">

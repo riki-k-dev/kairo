@@ -27,7 +27,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   const [isLoading, setIsLoading] = useState(true);
 
-  // moving logoutUser above useEffect to fix the ESLint warning
   const logoutUser = () => {
     localStorage.removeItem("kairo_token");
     setToken(null);

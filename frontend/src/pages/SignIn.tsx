@@ -1,18 +1,49 @@
-// src/pages/SignIn.tsx
+// frontend/src/pages/SignIn.tsx
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLayout from "../components/auth/AuthLayout";
 import Button1 from "../components/ui/Button1";
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function SignIn() {
   const [emailVal, setEmailVal] = useState("");
   const [passVal, setPassVal] = useState("");
   const [showPass, setShowPass] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const navigate = useNavigate();
+  const { loginUser } = useAuth();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!emailVal || !passVal) return;
+
+    setIsLoading(true);
+    setErrorMsg("");
+
+    try {
+      const res = await api.post("/auth/signin", {
+        email: emailVal,
+        password: passVal,
+      });
+
+      if (res.data.success) {
+        loginUser(res.data.data.token, res.data.data.user);
+
+        navigate("/", { replace: true });
+      }
+    } catch (err: unknown) {
+      const backendErr =
+        err instanceof Error ? err.message : "Something went wrong while signing in";
+      setErrorMsg(backendErr);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -31,6 +62,13 @@ export default function SignIn() {
       </div>
 
       <form onSubmit={handleLogin} className="space-y-5">
+        {/* Simple error banner if auth fails */}
+        {errorMsg && (
+          <div className="p-3 bg-red-50 text-red-500 text-sm rounded border border-red-100">
+            {errorMsg}
+          </div>
+        )}
+
         <div className="space-y-1.5">
           <label className="text-sm text-[var(--text-main)] block transition-colors">
             Email Address
@@ -42,6 +80,7 @@ export default function SignIn() {
             onChange={(e) => setEmailVal(e.target.value)}
             className="w-full px-4 py-2.5 rounded border border-[var(--input-border)] bg-[var(--input-bg)] text-[var(--text-main)] focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -57,6 +96,7 @@ export default function SignIn() {
               onChange={(e) => setPassVal(e.target.value)}
               className="w-full px-4 py-2.5 rounded border border-[var(--input-border)] bg-[var(--input-bg)] text-[var(--text-main)] focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all"
               required
+              disabled={isLoading}
             />
             <button
               type="button"
@@ -68,8 +108,9 @@ export default function SignIn() {
           </div>
         </div>
 
-        {/* button */}
-        <Button1 type="submit">Sign in</Button1>
+        <Button1 type="submit" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign in"}
+        </Button1>
       </form>
 
       <div className="mt-6 text-center text-sm text-[var(--text-muted)] transition-colors">
