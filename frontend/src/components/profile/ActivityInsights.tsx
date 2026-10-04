@@ -38,7 +38,7 @@ export default function ActivityInsights({ tasks }: ActivityInsightsProps) {
   startDate.setMonth(startDate.getMonth() - 6);
 
   return (
-    <div className="bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg overflow-hidden shadow-sm">
+    <div className="bg-[var(--input-bg)] border border-[var(--input-border)] rounded overflow-hidden shadow-sm">
       <div className="px-6 py-4 border-b border-[var(--input-border)]">
         <h2 className="text-lg font-medium text-[var(--text-main)]">
           Activity Insights

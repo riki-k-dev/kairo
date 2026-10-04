@@ -1,6 +1,8 @@
 // frontend/src/pages/Profile.tsx
 
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import ThemeToggle from "../components/ui/ThemeToggle";
 import ProfileDetails from "../components/profile/ProfileDetails";
@@ -32,14 +34,14 @@ export default function Profile() {
   return (
     <MainLayout tasks={tasksList}>
       <div className="flex justify-between items-start w-full mb-10 -mt-3">
-        <div>
-          <h1 className="text-3xl mb-1 heading-font text-[var(--text-main)]">
-            Profile Settings
-          </h1>
-          <p className="text-[var(--text-muted)] italic font-serif">
-            Manage your details and view activity
-          </p>
-        </div>
+        <Link
+          to="/"
+          className="flex items-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors mt-2 cursor-pointer"
+          style={{ fontFamily: "'Figtree', sans-serif" }}
+        >
+          <ArrowLeft size={20} className="mr-2" />
+          <span className="text-lg font-medium">back to home</span>
+        </Link>
         <ThemeToggle className="mt-1" />
       </div>
 

@@ -33,7 +33,7 @@ export default function DangerZone() {
   };
 
   return (
-    <div className="bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg overflow-hidden shadow-sm flex items-center justify-between p-6">
+    <div className="bg-[var(--input-bg)] border border-[var(--input-border)] rounded overflow-hidden shadow-sm flex items-center justify-between p-6">
       <div>
         <h2 className="text-lg font-medium text-[var(--text-main)]">
           Delete account

@@ -1,7 +1,7 @@
 // frontend/src/components/layout/Sidebar.tsx
 
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ListTodo, LogOut, ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "../../assets/l2.png";
@@ -13,7 +13,6 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ tasks = [] }: SidebarProps) {
-  const loc = useLocation();
   const navigate = useNavigate();
   const [listOpen, setListOpen] = useState(true);
 
@@ -62,15 +61,8 @@ export default function Sidebar({ tasks = [] }: SidebarProps) {
 
         <nav className="space-y-1">
           <div
-            onClick={() => {
-              navigate("/");
-              setListOpen(!listOpen);
-            }}
-            className={`flex items-center justify-between px-3 py-2 rounded-md transition-colors cursor-pointer select-none ${
-              loc.pathname === "/"
-                ? "text-[var(--text-main)] bg-[var(--bg-secondary)]"
-                : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-secondary)]"
-            }`}
+            onClick={() => setListOpen(!listOpen)}
+            className="flex items-center justify-between px-3 py-2 rounded-md transition-colors cursor-pointer select-none"
           >
             <div className="flex items-center text-sm font-medium">
               <ListTodo size={18} className="mr-3" />
@@ -122,7 +114,7 @@ export default function Sidebar({ tasks = [] }: SidebarProps) {
           onClick={() => navigate("/profile")}
           className="flex items-center overflow-hidden cursor-pointer flex-1"
         >
-          <div className="w-8 h-8 shrink-0 bg-[var(--input-border)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3 uppercase transition-colors)]">
+          <div className="w-8 h-8 shrink-0 bg-[var(--input-border)] rounded flex items-center justify-center text-sm font-medium text-[var(--text-main)] mr-3 uppercase transition-colors">
             {user?.name ? user.name.charAt(0) : "U"}
           </div>
           <div className="flex flex-col truncate pr-2">

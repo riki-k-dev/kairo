@@ -10,6 +10,7 @@ import {
   ClockAlert,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import TaskCard from "../components/home/TaskCard";
 import TaskModal from "../components/home/TaskModal";
@@ -22,6 +23,8 @@ import type { Task, FilterType } from "../types";
 
 export default function Home() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [tasksList, setTasksList] = useState<Task[]>([]);
   const [filterStr, setFilterStr] = useState<FilterType>("To Do");
   const [searchQ, setSearchQ] = useState("");
@@ -139,6 +142,7 @@ export default function Home() {
 
   return (
     <MainLayout tasks={tasksList}>
+      {/* header */}
       <div className="flex justify-between items-start w-full mb-13 -mt-3">
         <div>
           <h1 className="text-3xl mb-1 heading-font text-[var(--text-main)]">
@@ -148,7 +152,6 @@ export default function Home() {
             Let's make progress today!
           </p>
         </div>
-        {/* theme toggle */}
         <ThemeToggle className="mt-1" />
       </div>
 
@@ -172,12 +175,10 @@ export default function Home() {
               />
             )}
           </div>
-          {/* calendar */}
           {showCal && (
             <Calendar selectedDate={selDate} onSelect={handleDatePicked} />
           )}
         </div>
-        {/* search bar */}
         <div className="w-full sm:w-auto">
           <SearchBar value={searchQ} onChange={setSearchQ} />
         </div>
@@ -185,7 +186,7 @@ export default function Home() {
 
       {/* filter tabs */}
       <div className="w-full flex-1">
-        <div className="flex w-full sm:w-max bg-[var(--input-bg)] rounded-lg shadow-sm border border-[var(--input-border)] mb-8 p-1 mx-auto sm:mx-0 overflow-x-auto">
+        <div className="flex w-full sm:w-max bg-[var(--input-bg)] rounded-lg shadow-sm border border-[var(--input-border)] mb-8 p-1 mx-auto sm:mx-0 overflow-hidden">
           {(["To Do", "Completed", "Pending"] as FilterType[]).map((tab) => {
             const isActive = filterStr === tab;
             return (
@@ -206,7 +207,6 @@ export default function Home() {
                     style={{ zIndex: 0 }}
                   />
                 )}
-                {/* icon */}
                 <span className="relative z-10 flex items-center">
                   {tab === "Completed" && <Check size={15} className="mr-2" />}
                   {tab === "Pending" && (
@@ -246,6 +246,18 @@ export default function Home() {
         )}
       </div>
 
+      {/* Floating Action Buttons */}
+      {/* Mobile Profile Button */}
+      <div className="md:hidden fixed bottom-9 left-8 z-20">
+        <button
+          onClick={() => navigate("/profile")}
+          className="w-14 h-14 bg-[var(--bg-secondary)] border border-[var(--input-border)] text-[var(--text-main)] rounded-full shadow-xl flex items-center justify-center text-xl font-medium uppercase hover:scale-105 transition-all cursor-pointer"
+        >
+          {user?.name ? user.name.charAt(0) : "U"}
+        </button>
+      </div>
+
+      {/* Create Task Button */}
       <button
         onClick={openCreate}
         className="fixed bottom-9 right-8 md:right-12 lg:right-16 w-14 h-14 bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-full shadow-xl flex items-center justify-center hover:scale-105 hover:opacity-90 transition-all z-20 cursor-pointer"
