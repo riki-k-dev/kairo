@@ -8,13 +8,10 @@ import ThemeToggle from "../components/ui/ThemeToggle";
 import ProfileDetails from "../components/profile/ProfileDetails";
 import ActivityInsights from "../components/profile/ActivityInsights";
 import DangerZone from "../components/profile/DangerZone";
-import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import type { Task } from "../types";
 
 export default function Profile() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user } = useAuth();
   const [tasksList, setTasksList] = useState<Task[]>([]);
 
   useEffect(() => {
